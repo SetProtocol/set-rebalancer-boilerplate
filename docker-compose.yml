@@ -1,0 +1,9 @@
+version: '2'
+services:
+  node:
+    build: ./
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      - NODE_ENV=production
+    network_mode: bridge

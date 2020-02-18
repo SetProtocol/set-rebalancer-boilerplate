@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "esModuleInterop": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "dist",
+        "sourceMap": true,
+        "target": "es6",
+        "paths": {
+            "*": [
+                "node_modules/*",
+                "src/typings/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*",
+        "./node_modules/web3-typescript-typings/index.d.ts"
+    ]
+}
