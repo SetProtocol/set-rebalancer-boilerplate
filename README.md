@@ -17,7 +17,7 @@ $ yarn install --ignore-engines
 NOTE: Heroku does not allow for two types of lock files so only do `yarn install` vs `npm install`
 
 Walk through the steps in the API Integration Walkthrough in order to:
-- Set up you wallet with mnemonic
+- Set up your wallet with mnemonic
 - Set up Infura
 - Set up your .env file
 
@@ -28,6 +28,8 @@ $ yarn run start-dev
 
 Running tests:
 ```bash
-$ yarn test 
+$ yarn test
 ```
-NOTE: If you run into issues with `build/Release/scrypt` not being found, run `npm run fix-scrypt`
+Troubleshooting:
+- If you run into issues with `build/Release/scrypt` not being found, run `npm run fix-scrypt`
+- If you run into issues with `gyp` and `AttributeError: 'NoneType' object has no attribute 'groups'`, then Install Command Line Tools (if you haven't already), `xcode-select --install`, Enable command line tools, `sudo xcode-select --switch /Library/Developer/CommandLineTools`, and update node-gyp, `sudo npm explore npm -g -- npm install node-gyp@latest`

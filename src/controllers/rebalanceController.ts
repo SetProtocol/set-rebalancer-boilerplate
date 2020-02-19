@@ -33,7 +33,7 @@ export let rebalance = async (req: Request, res: Response) => {
   const gasCost: string = req.body.gas_cost || process.env.DEFAULT_GAS_COST;
 
   // Gas price is the amount of gwei per gas unit used you would pay for a transaction to go through.
-  const gasPrice: string = '2000000000';
+  const gasPrice: string = "2000000000";
 
   try {
     const transactionHash = await setProtocol.socialTrading.updateAllocationAsync(
