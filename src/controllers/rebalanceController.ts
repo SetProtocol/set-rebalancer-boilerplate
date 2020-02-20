@@ -7,6 +7,7 @@ import { Address, GasPrices } from "../typings/common";
 import { setProtocol, web3 } from "../util/ethereum";
 import { allocationFormatter } from "../util/formatters";
 import { getGasPrice } from "../util/gas";
+import { getSetId } from "../util/set";
 import { authorizeRequest } from "../util/request";
 
 /**
@@ -33,7 +34,7 @@ export let rebalance = async (req: Request, res: Response) => {
   const gasCost: string = req.body.gas_cost || process.env.DEFAULT_GAS_COST;
 
   // Gas price is the amount of gwei per gas unit used you would pay for a transaction to go through.
-  const gasPrice: string = '2000000000';
+  const gasPrice: string = (await getGasPrice(req.body.gas_price)) || process.env.DEFAULT_GAS_PRICE;
 
   try {
     const transactionHash = await setProtocol.socialTrading.updateAllocationAsync(
@@ -52,7 +53,7 @@ export let rebalance = async (req: Request, res: Response) => {
     /**
      * Handle feed post
      */
-    const signedAddress = await web3.eth.sign(process.env.FROM_ACCOUNT, process.env.FROM_ACCOUNT);
+    const setId = getSetId(process.env.FROM_ACCOUNT);
 
     const feedPostBody = {
       transaction_hash: transactionHash,
@@ -63,13 +64,12 @@ export let rebalance = async (req: Request, res: Response) => {
       method: "post",
       body: JSON.stringify(feedPostBody),
       headers: {
-        "X-SET-TRADER-ADDRESS": process.env.FROM_ACCOUNT,
-        "X-SET-TRADER-SIGNATURE": signedAddress,
+        "X-SET-TRADER-API-KEY": process.env.SET_API_KEY,
       },
     };
 
     axios
-      .post(`${process.env.SET_API_HOST}/v1/trading_pools/${tradingPoolId}/feed_post`, feedPostOpts)
+      .post(`${process.env.SET_API_HOST}/v1/trading_pools/${setId}/feed_post`, feedPostOpts)
       .then(res => console.log(res.status))
       .catch(error => console.log(error.message));
 
