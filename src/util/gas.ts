@@ -4,7 +4,7 @@ export const getGasPrice = async (gasPrice: number) => {
   let gasPriceResult = gasPrice;
 
   if (!gasPriceResult) {
-    const gasPrices = await axios.get("https://api.tokensets.com/public/v1/gas_price");
+    const gasPrices = await axios.get(`${process.env.SET_API_HOST}/public/v1/gas_price`);
     gasPriceResult = gasPrices.data.fast;
   }
 
