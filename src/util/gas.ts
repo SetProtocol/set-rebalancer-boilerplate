@@ -1,12 +1,12 @@
 import axios from "axios";
 
-import { web3 } from "../util/ethereum";
-
 export const getGasPrice = async (gasPrice: number) => {
-  if (!gasPrice) {
-    const gasPrices = await axios.get("https://api.tokensets.com/v1/gas_estimates");
-    gasPrice = gasPrices.data.fast;
+  let gasPriceResult = gasPrice;
+
+  if (!gasPriceResult) {
+    const gasPrices = await axios.get(`${process.env.SET_API_HOST}/public/v1/gas_price`);
+    gasPriceResult = gasPrices.data.fast;
   }
 
-  return web3.utils.toWei(gasPrice.toString(), "gwei");
+  return gasPriceResult.toString();
 };
