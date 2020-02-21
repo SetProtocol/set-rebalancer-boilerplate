@@ -7,8 +7,8 @@ import { Address, GasPrices } from "../typings/common";
 import { setProtocol, web3 } from "../util/ethereum";
 import { allocationFormatter } from "../util/formatters";
 import { getGasPrice } from "../util/gas";
-import { getSetId } from "../util/set";
 import { authorizeRequest } from "../util/request";
+import { getSetId } from "../util/set";
 
 /**
  * POST /rebalance/:address
@@ -21,10 +21,6 @@ export let rebalance = async (req: Request, res: Response) => {
 
   // Your Set's smart contract address.
   const tradingPoolAddress: Address = req.params.address;
-
-  // Your Set's id. Commonly found at the path on your Set page.
-  // Ex: www.tokensets.com/set/eth20smaco <= This value
-  const tradingPoolId: string = req.body.id;
 
   // The allocation you want to rebalance to in the form of a number. Must be an integer.
   // Ex: 50, 100, 0, 75, etc.
@@ -53,25 +49,23 @@ export let rebalance = async (req: Request, res: Response) => {
     /**
      * Handle feed post
      */
-    const setId = getSetId(process.env.FROM_ACCOUNT);
+    const setId = await getSetId(tradingPoolAddress);
 
     const feedPostBody = {
       transaction_hash: transactionHash,
       text: `Rebalancing to a new allocation of ${req.body.allocation}% of this Set's base asset.`,
     };
 
-    const feedPostOpts = {
-      method: "post",
-      body: JSON.stringify(feedPostBody),
+    const feedPostHeaders = {
       headers: {
         "X-SET-TRADER-API-KEY": process.env.SET_API_KEY,
       },
     };
 
     axios
-      .post(`${process.env.SET_API_HOST}/v1/trading_pools/${setId}/feed_post`, feedPostOpts)
-      .then(res => console.log(res.status))
-      .catch(error => console.log(error.message));
+      .post(`${process.env.SET_API_HOST}/public/v1/trading_pools/${setId}/feed_post`, feedPostBody, feedPostHeaders)
+      .then(res => console.log("Response from /v1/trading_pools/${setId}/feed_post:", res.status))
+      .catch(error => console.log("Error from /v1/trading_pools/${setId}/feed_post: ", error.message));
 
     const response = { transaction_hash: transactionHash };
     res.status(200).send(response);
